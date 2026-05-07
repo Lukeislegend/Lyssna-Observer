@@ -19,7 +19,6 @@ export async function createBot(
   const body: Record<string, unknown> = {
     meeting_url: meetingUrl,
     bot_name: "Lyssna Observer",
-    transcription_options: { provider: "assembly_ai" },
     webhook_url: isPublic ? webhookUrl : undefined,
     metadata: { sessionId },
   }
