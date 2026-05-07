@@ -35,7 +35,10 @@ const statusColors: Record<string, string> = {
 }
 
 function VideoFeed() {
-  const tracks = useTracks([Track.Source.Camera, Track.Source.ScreenShare], { onlySubscribed: true })
+  const tracks = useTracks(
+    [Track.Source.Camera, Track.Source.ScreenShare, Track.Source.Unknown],
+    { onlySubscribed: false },
+  )
   if (tracks.length === 0) {
     return (
       <Box bg="black" borderRadius="md" w="full" h="400px" display="flex" alignItems="center" justifyContent="center">

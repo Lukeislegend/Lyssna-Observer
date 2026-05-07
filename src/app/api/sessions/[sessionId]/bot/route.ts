@@ -22,11 +22,14 @@ export async function POST(req: NextRequest, { params }: RouteParams) {
 
   // Get the RTMP ingress URL for this session's LiveKit room
   let rtmpUrl: string | undefined
+  console.log("[bot/start] livekitIngressId:", session.livekitIngressId, "roomName:", session.livekitRoomName)
   if (session.livekitIngressId) {
     try {
       const client = ingressClient()
       const ingresses = await client.listIngress({ roomName: session.livekitRoomName ?? "" })
+      console.log("[bot/start] ingresses found:", ingresses.length)
       const ingress = ingresses.find((i) => i.ingressId === session.livekitIngressId)
+      console.log("[bot/start] matched ingress:", ingress?.ingressId, "url:", ingress?.url, "streamKey:", ingress?.streamKey)
       if (ingress?.url && ingress?.streamKey) {
         rtmpUrl = `${ingress.url}/${ingress.streamKey}`
       }
@@ -34,6 +37,7 @@ export async function POST(req: NextRequest, { params }: RouteParams) {
       console.error("[bot/start] Could not fetch ingress URL:", err)
     }
   }
+  console.log("[bot/start] rtmpUrl:", rtmpUrl)
 
   let bot: { id: string }
   try {
