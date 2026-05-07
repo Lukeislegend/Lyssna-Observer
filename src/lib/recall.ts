@@ -23,9 +23,6 @@ export async function createBot(
     metadata: { sessionId },
   }
 
-  if (isPublic) {
-    body.real_time_transcription = { destination_url: webhookUrl, partial_results: false }
-  }
 
   // Stream composite video to LiveKit via RTMP when ingress URL is available
   if (rtmpUrl) {
