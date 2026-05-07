@@ -1,0 +1,65 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum SessionRole {
+  RESEARCHER
+  OBSERVER
+}
+
+enum BotStatus {
+  IDLE
+  JOINING
+  IN_CALL
+  DONE
+  FAILED
+}
+
+model Session {
+  id               String     @id @default(cuid())
+  slug             String     @unique
+  researcherKey    String     @unique
+  observerToken    String     @unique
+  title            String
+  meetingUrl       String
+  recallBotId      String?
+  botStatus        BotStatus  @default(IDLE)
+  livekitRoomName  String?
+  livekitIngressId String?
+  observerPasscode String?
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+
+  messages           Message[]
+  transcriptSegments TranscriptSegment[]
+}
+
+model Message {
+  id        String      @id @default(cuid())
+  sessionId String
+  session   Session     @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  authorRole SessionRole
+  body      String
+  createdAt DateTime    @default(now())
+
+  @@index([sessionId, createdAt])
+}
+
+model TranscriptSegment {
+  id           String   @id @default(cuid())
+  sessionId    String
+  session      Session  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  startMs      Int
+  speakerLabel String   @default("mixed")
+  text         String
+  confidence   Float?
+  createdAt    DateTime @default(now())
+
+  @@index([sessionId, startMs])
+}

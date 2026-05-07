@@ -1,0 +1,39 @@
+{
+  "name": "lyssna-observer",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "prisma generate && next build",
+    "start": "next start",
+    "lint": "next lint",
+    "postinstall": "prisma generate",
+    "db:push": "prisma db push",
+    "db:studio": "prisma studio"
+  },
+  "dependencies": {
+    "@chakra-ui/react": "^2.10.9",
+    "@deepgram/sdk": "^4.11.2",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@livekit/components-react": "^2.9.21",
+    "@livekit/components-styles": "^1.2.0",
+    "@prisma/client": "^6.7.0",
+    "framer-motion": "^11.18.2",
+    "livekit-client": "^2.18.9",
+    "livekit-server-sdk": "^2.15.2",
+    "next": "15.5.9",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@types/node": "^22",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "15.5.9",
+    "prisma": "^6.7.0",
+    "typescript": "^5"
+  }
+}
