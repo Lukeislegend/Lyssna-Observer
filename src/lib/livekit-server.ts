@@ -5,19 +5,26 @@ import {
   RoomServiceClient,
 } from "livekit-server-sdk"
 
-const URL = process.env.LIVEKIT_URL!
-const API_KEY = process.env.LIVEKIT_API_KEY!
-const API_SECRET = process.env.LIVEKIT_API_SECRET!
+function getHttpUrl() {
+  const url = process.env.LIVEKIT_URL
+  if (!url) throw new Error("LIVEKIT_URL is not configured")
+  return url.replace(/^wss?:\/\//, "https://")
+}
 
-// Strip wss:// for HTTP clients
-const httpUrl = URL.replace(/^wss?:\/\//, "https://")
+function apiKey() {
+  return process.env.LIVEKIT_API_KEY!
+}
+
+function apiSecret() {
+  return process.env.LIVEKIT_API_SECRET!
+}
 
 export function roomClient() {
-  return new RoomServiceClient(httpUrl, API_KEY, API_SECRET)
+  return new RoomServiceClient(getHttpUrl(), apiKey(), apiSecret())
 }
 
 export function ingressClient() {
-  return new IngressClient(httpUrl, API_KEY, API_SECRET)
+  return new IngressClient(getHttpUrl(), apiKey(), apiSecret())
 }
 
 export async function createRoom(roomName: string) {
@@ -41,7 +48,7 @@ export async function deleteIngress(ingressId: string) {
 }
 
 export function observerToken(roomName: string, participantId: string) {
-  const token = new AccessToken(API_KEY, API_SECRET, {
+  const token = new AccessToken(apiKey(), apiSecret(), {
     identity: participantId,
     ttl: "4h",
   })
