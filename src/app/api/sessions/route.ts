@@ -28,16 +28,22 @@ export async function POST(req: Request) {
     body.observerPasscode?.trim() || process.env.OBSERVER_DEFAULT_PASSCODE?.trim() || null
 
   // Create session first to get the ID
-  const session = await prisma.session.create({
-    data: {
-      slug: nanoid(14),
-      researcherKey: nanoid(32),
-      observerToken: nanoid(32),
-      title,
-      meetingUrl,
-      observerPasscode,
-    },
-  })
+  let session: Awaited<ReturnType<typeof prisma.session.create>>
+  try {
+    session = await prisma.session.create({
+      data: {
+        slug: nanoid(14),
+        researcherKey: nanoid(32),
+        observerToken: nanoid(32),
+        title,
+        meetingUrl,
+        observerPasscode,
+      },
+    })
+  } catch (err) {
+    console.error("[session/create] DB error:", err)
+    return NextResponse.json({ error: "Database error — please try again" }, { status: 500 })
+  }
 
   // Create LiveKit room + RTMP ingress for the observer stream
   const roomName = `lyssna-${session.id}`
