@@ -50,9 +50,12 @@ export async function POST(req: Request) {
   let livekitIngressId: string | null = null
 
   try {
+    console.log("[session/create] Creating LiveKit room:", roomName)
     await createRoom(roomName)
+    console.log("[session/create] Creating RTMP ingress")
     const ingress = await createRtmpIngress(roomName, session.id)
     livekitIngressId = ingress.ingressId ?? null
+    console.log("[session/create] Ingress created:", livekitIngressId, "url:", ingress.url, "streamKey:", ingress.streamKey)
 
     await prisma.session.update({
       where: { id: session.id },
@@ -60,7 +63,6 @@ export async function POST(req: Request) {
     })
   } catch (err) {
     console.error("[session/create] LiveKit setup failed:", err)
-    // Continue without LiveKit — session still works for transcript-only
   }
 
   const base = process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, "") || "http://localhost:3000"
