@@ -26,9 +26,7 @@ export async function createBot(
 
   // Stream composite video to LiveKit via RTMP when ingress URL is available
   if (rtmpUrl) {
-    body.output_media = {
-      rtmp: { destination_urls: [rtmpUrl] },
-    }
+    body.real_time_media = { rtmp_destination_url: rtmpUrl }
   }
 
   const res = await fetch(`${BASE}/bot`, {
