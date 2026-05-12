@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { createBot, stopBot } from "@/lib/recall"
-import { ingressClient } from "@/lib/livekit-server"
+import { deleteIngress, ingressClient } from "@/lib/livekit-server"
 
 type RouteParams = { params: Promise<{ sessionId: string }> }
 
@@ -74,9 +74,18 @@ export async function DELETE(req: NextRequest, { params }: RouteParams) {
     console.error("[bot/stop]", err)
   }
 
+  // Clean up LiveKit ingress so we don't hit the limit
+  if (session.livekitIngressId) {
+    try {
+      await deleteIngress(session.livekitIngressId)
+    } catch (err) {
+      console.error("[bot/stop] Could not delete ingress:", err)
+    }
+  }
+
   await prisma.session.update({
     where: { id: session.id },
-    data: { botStatus: "DONE" },
+    data: { botStatus: "DONE", livekitIngressId: null },
   })
 
   return NextResponse.json({ status: "DONE" })
