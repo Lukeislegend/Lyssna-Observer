@@ -24,10 +24,8 @@ export async function createBot(
   }
 
 
-  // Stream composite video to LiveKit via RTMP when ingress URL is available
-  if (rtmpUrl) {
-    body.real_time_media = { rtmp_destination_url: rtmpUrl }
-  }
+  // TODO: enable RTMP once Recall.ai account has streaming feature unlocked
+  // if (rtmpUrl) body.real_time_media = { rtmp_destination_url: rtmpUrl }
 
   const res = await fetch(`${BASE}/bot`, {
     method: "POST",
