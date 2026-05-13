@@ -24,8 +24,19 @@ export async function createBot(
   }
 
 
-  // TODO: enable RTMP once Recall.ai account has streaming feature unlocked
-  // if (rtmpUrl) body.real_time_media = { rtmp_destination_url: rtmpUrl }
+  // Stream composite video to LiveKit via RTMP
+  if (rtmpUrl) {
+    body.recording_config = {
+      video_mixed_flv: {},
+      realtime_endpoints: [
+        {
+          type: "rtmp",
+          url: rtmpUrl,
+          events: ["video_mixed_flv.data"],
+        },
+      ],
+    }
+  }
 
   const res = await fetch(`${BASE}/bot`, {
     method: "POST",
